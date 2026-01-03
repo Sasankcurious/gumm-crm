@@ -10,17 +10,21 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // --- DATABASE CONNECTION ---
-// Change 'pool' to 'db' so it matches the rest of your code!
+// --- DATABASE CONNECTION ---
 const db = mysql.createPool({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASS || 'Sasank@2003',
-    database: process.env.DB_NAME || 'gumm_crm',
+    database: process.env.DB_NAME || 'test', // TiDB usually calls the default DB 'test'
+    port: process.env.DB_PORT || 4000,       // Added Port (Required for Cloud)
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    ssl: {                                    // Added SSL (Required for Cloud)
+        minVersion: 'TLSv1.2',
+        rejectUnauthorized: true
+    }
 });
-const SECRET_KEY = 'super_secret_key_123';
 
 // --- MIDDLEWARE (Protects Routes) ---
 const authMiddleware = (req, res, next) => {
