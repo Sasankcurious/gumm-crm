@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Gumm CRM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { margin: 0; background: #020617; font-family: 'Inter', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .split-card { display: flex; width: 900px; height: 550px; background: #0f172a; border-radius: 20px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .left-side { flex: 1; background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); padding: 3rem; display: flex; flex-direction: column; justify-content: center; color: white; position: relative; }
+        .right-side { flex: 1; padding: 3rem; display: flex; flex-direction: column; justify-content: center; }
+        .input-group { margin-bottom: 1.25rem; }
+        .input-group label { display: block; color: #94a3b8; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+        .input-field { width: 100%; background: #1e293b; border: 1px solid #334155; color: white; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 0.95rem; outline: none; transition: 0.2s; box-sizing: border-box; }
+        .input-field:focus { border-color: #6366f1; ring: 2px solid #6366f1; }
+        .btn-submit { width: 100%; background: #6366f1; color: white; padding: 0.875rem; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 1rem; margin-top: 1rem; }
+        .btn-submit:hover { background: #4f46e5; }
+    </style>
+</head>
+<body>
+    <div class="split-card">
+        <div class="left-side">
+            <i class="fas fa-rocket" style="font-size: 2rem; margin-bottom: 2rem; opacity: 0.9;"></i>
+            <h1 style="font-size: 2.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 1rem;">Build faster.<br>Scale smarter.</h1>
+            <p style="opacity: 0.8; line-height: 1.6;">Join the operating system designed for next-gen student developers.</p>
+            <div style="position: absolute; bottom: 3rem; font-size: 0.8rem; opacity: 0.6;">&copy; Curious Coders 2025</div>
+        </div>
+
+        <div class="right-side">
+            <h2 style="color: white; font-size: 1.5rem; font-weight: 700; margin-top: 0; margin-bottom: 0.5rem;">Initialize Workspace</h2>
+            <p style="color: #64748b; margin-top: 0; margin-bottom: 2rem; font-size: 0.9rem;">Enter details to create your secure environment.</p>
+
+            <form id="registerForm">
+                <div class="input-group">
+                    <label>Organization Name</label>
+                    <input type="text" id="companyName" class="input-field" placeholder="e.g. Stark Industries" required>
+                </div>
+                <div class="input-group">
+                    <label>Business Email</label>
+                    <input type="email" id="regEmail" class="input-field" placeholder="name@company.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="regPassword" class="input-field" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-submit">Create Workspace <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></button>
+            </form>
+            
+            <p style="text-align: center; margin-top: 1.5rem; color: #64748b; font-size: 0.9rem;">
+                Already have an account? <a href="login.html" style="color: #6366f1; text-decoration: none; font-weight: 600;">Login here</a>
+            </p>
+        </div>
+    </div>
+    <script src="auth-client.js"></script>
+</body>
+</html>

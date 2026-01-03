@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Gumm CRM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div id="top-progress-bar"></div>
+
+    <div class="app-container">
+        <aside class="sidebar" style="display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+                <div style="margin-bottom:3rem; display:flex; align-items:center; gap:12px;">
+                    <img id="companyAvatar" src="https://ui-avatars.com/api/?name=Admin&background=random&color=fff&bold=true" 
+                         style="width:40px; height:40px; border-radius:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+                    
+                    <div style="display:flex; flex-direction:column;">
+                        <span id="orgBrand" style="font-weight:800; font-size:1.1rem; color:white; line-height:1;">My Workspace</span>
+                        <span style="font-size:0.7rem; color:var(--text-dim); margin-top:4px;">Admin Console</span>
+                    </div>
+                </div>
+                
+                <nav style="display:flex; flex-direction:column; gap:8px;">
+                    <a href="#" onclick="switchView('overview'); return false;" id="btnOverviewLink" 
+                       style="display:flex; align-items:center; gap:12px; padding:12px; background:linear-gradient(90deg, rgba(99,102,241,0.1), transparent); border-left: 3px solid var(--primary); color:white; text-decoration:none; font-weight:600; transition:0.2s;">
+                        <i class="fas fa-chart-pie" style="color:var(--primary); width:20px;"></i> Overview
+                    </a>
+
+                    <a href="#" onclick="switchView('notes'); return false;" id="btnNotesLink" 
+                       style="display:flex; align-items:center; gap:12px; padding:12px; color:var(--text-dim); text-decoration:none; font-weight:500; transition:0.2s; border-left: 3px solid transparent;"
+                       onmouseover="this.style.color='white'; this.style.background='rgba(255,255,255,0.05)'" 
+                       onmouseout="if(currentView!=='notes'){this.style.color='var(--text-dim)'; this.style.background='transparent'}">
+                        <i class="fas fa-sticky-note" style="color:#94a3b8; width:20px;"></i> Notes
+                    </a>
+
+                    <a href="#" style="display:flex; align-items:center; gap:12px; padding:12px; color:var(--text-dim); text-decoration:none; font-weight:500; transition:0.2s; border-left: 3px solid transparent;" 
+                       onmouseover="this.style.color='white'; this.style.background='rgba(255,255,255,0.05)'" 
+                       onmouseout="this.style.color='var(--text-dim)'; this.style.background='transparent'">
+                        <i class="fas fa-users" style="color:#94a3b8; width:20px;"></i> Team
+                    </a>
+
+                    <a href="#" onclick="switchView('settings'); return false;" id="btnSettingsLink" 
+                       style="display:flex; align-items:center; gap:12px; padding:12px; color:var(--text-dim); text-decoration:none; font-weight:500; transition:0.2s; border-left: 3px solid transparent;"
+                       onmouseover="this.style.color='white'; this.style.background='rgba(255,255,255,0.05)'" 
+                       onmouseout="if(currentView!=='settings'){this.style.color='var(--text-dim)'; this.style.background='transparent'}">
+                        <i class="fas fa-cog" style="color:#94a3b8; width:20px;"></i> Settings
+                    </a>
+                </nav>
+            </div>
+
+            <div id="logoutBtn" style="padding-top:20px; border-top:1px solid rgba(255,255,255,0.1); cursor:pointer; display:flex; align-items:center; gap:10px; color:#f87171; transition:0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                <i class="fas fa-sign-out-alt"></i> 
+                <span style="font-weight:600; font-size:0.9rem;">Sign Out</span>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2.5rem;">
+                <div>
+                    <h1 id="pageTitle" style="margin:0; font-size:1.8rem; font-weight:800; letter-spacing: -0.5px;">Executive Command Center</h1>
+                    <p id="pageSubtitle" style="color:var(--text-dim); margin-top:5px; margin-bottom:0; font-size:0.95rem;">
+                        <span style="color:#10b981;">● Live</span> Tracking performance and growth metrics
+                    </p>
+                </div>
+                
+                <div style="display:flex; gap:10px;">
+                    <button onclick="window.exportCSV()" style="background:rgba(255,255,255,0.1); border:1px solid var(--border); color:white; padding:10px 16px; border-radius:10px; cursor:pointer; font-weight:600; transition:0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                        <i class="fas fa-download" style="margin-right:5px;"></i> Export
+                    </button>
+                    <button id="openModal" class="btn-primary">
+                        <i class="fas fa-plus"></i> New Lead
+                    </button>
+                </div>
+            </header>
+
+            <div id="overviewView">
+                <div style="display:grid; grid-template-columns: 2fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+                    <div class="glass-card" style="padding:1.5rem; height:280px;">
+                        <h3 style="margin:0 0 1rem 0; font-size:1rem; color:var(--text-dim); font-weight:600;">Growth Velocity</h3>
+                        <div style="height:200px; position:relative;">
+                            <canvas id="pipelineChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; flex-direction:column; gap:1rem;">
+                        <div style="display:flex; gap:1rem; flex:1;">
+                            <div class="glass-card" style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:1rem;">
+                                <h2 id="totalCount" style="font-size:2.5rem; margin:0; font-weight:800;">0</h2>
+                                <span style="color:var(--text-dim); font-size:0.8rem;">Total Leads</span>
+                            </div>
+                            <div class="glass-card" style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:1rem;">
+                                <h2 id="wonCount" style="font-size:2.5rem; margin:0; font-weight:800; color:var(--accent);">0</h2>
+                                <span style="color:var(--text-dim); font-size:0.8rem;">Closed Won</span>
+                            </div>
+                        </div>
+
+                        <div class="glass-card" style="flex:1; display:flex; align-items:center; justify-content:space-between; padding:0 2rem;">
+                            <div>
+                                <span style="color:var(--text-dim); font-size:0.8rem; text-transform:uppercase; letter-spacing:1px;">Actual Revenue</span>
+                                <h2 id="revenueCount" style="font-size:2rem; margin:0; font-weight:800; color:#10b981;">₹0</h2>
+                            </div>
+                            <div style="text-align:right;">
+                                 <span style="color:var(--text-dim); font-size:0.8rem; text-transform:uppercase; letter-spacing:1px;">Pipeline Value</span>
+                                 <h3 id="pipelineValue" style="font-size:1.2rem; margin:0; color:white; opacity:0.6;">₹0</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="display: flex; align-items: center; justify-content: space-between; height: 220px; padding: 0 30px; margin-bottom: 2rem;">
+                    <div style="width: 40%;">
+                        <h2 style="margin: 0; color: #fff; font-size: 1.3rem;">Lead Status</h2>
+                        <p style="color: #a0a0d0; margin-top: 5px; font-size: 0.85rem;">
+                            Real-time pipeline breakdown.
+                        </p>
+                        <div style="margin-top: 15px;">
+                            <span style="font-size: 2rem; font-weight: bold; color: #fff;" id="totalLeadsDisplay">0</span>
+                            <span style="color: #a0a0d0; font-size: 0.9rem; margin-left: 5px;">Total Leads</span>
+                        </div>
+                    </div>
+                    <div style="width: 60%; height: 100%; position: relative;">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="padding: 0.8rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display:flex; align-items:center; gap:15px; flex:1;">
+                        <i class="fas fa-search" style="color: var(--primary);"></i>
+                        <input type="text" id="searchInput" placeholder="Search leads..." 
+                               style="background:transparent!important; border:none!important; color:white; width:100%; outline:none; font-size:1rem;">
+                    </div>
+
+                    <div style="display:flex; gap:5px; background:rgba(255,255,255,0.05); padding:4px; border-radius:8px;">
+                        <button onclick="switchView('list')" id="btnList" style="background:var(--primary); color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; transition:0.2s;">
+                            <i class="fas fa-list"></i>
+                        </button>
+                        <button onclick="switchView('board')" id="btnBoard" style="background:transparent; color:#94a3b8; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; transition:0.2s;">
+                            <i class="fas fa-columns"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="listView" class="glass-card" style="padding:0; overflow:hidden;">
+                    <table style="margin:0;">
+                        <thead>
+                            <tr>
+                                <th>Prospect</th>
+                                <th>Email Address</th>
+                                <th>Score</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leadTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div id="boardView" class="kanban-container hidden"></div>
+            </div>
+
+            <div id="notesView" class="hidden">
+                <div class="glass-card" style="padding: 2rem; min-height: 400px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                        <div>
+                            <h2 style="margin:0; font-size:1.5rem; color:white; font-weight:800;">My Notes</h2>
+                            <p style="margin:5px 0 0 0; font-size:0.9rem; color:var(--text-dim);">Personal scratchpad for ideas and reminders.</p>
+                        </div>
+                        <div style="background:rgba(99, 102, 241, 0.2); width:45px; height:45px; display:flex; align-items:center; justify-content:center; border-radius:10px;">
+                            <i class="fas fa-sticky-note" style="color:var(--primary); font-size: 1.2rem;"></i>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin-bottom:2rem;">
+                        <input type="text" id="newNoteInput" placeholder="Type a new note here..." 
+                               style="flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--border); padding:14px; border-radius:8px; color:white; outline:none; font-size:1rem;">
+                        <button onclick="saveNote()" class="btn-primary" style="padding:0 2rem; font-size:1rem;">Add Note</button>
+                    </div>
+
+                    <div id="notesContainer" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap:15px;">
+                        <div style="text-align:center; color:var(--text-dim); padding:20px; grid-column: 1/-1;">Loading notes...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="settingsView" class="hidden">
+                <div class="glass-card" style="max-width: 600px; margin: 0 auto; padding: 2rem;">
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <img id="settingsAvatar" src="" style="width: 80px; height: 80px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); margin-bottom: 1rem;">
+                        <h2 style="margin: 0;">Profile Settings</h2>
+                        <p style="color: var(--text-dim);">Manage your workspace identity</p>
+                    </div>
+                    <form id="settingsForm">
+                        <label style="font-size:0.8rem; color:var(--text-dim); display:block; margin-bottom:8px; font-weight:600;">COMPANY / WORKSPACE NAME</label>
+                        <input type="text" id="companyNameInput" style="width: 100%; margin-bottom: 1.5rem; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: white; border-radius: 8px;">
+                        <div style="background: rgba(99, 102, 241, 0.1); border-left: 4px solid var(--primary); padding: 1rem; margin-bottom: 2rem; border-radius: 4px;">
+                            <h4 style="margin: 0 0 5px 0; color: var(--primary);">Note</h4>
+                            <p style="margin: 0; font-size: 0.9rem; color: #cbd5e1;">Changing your company name will automatically update your team avatar and dashboard header.</p>
+                        </div>
+                        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="leadModal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
+        <div class="glass-card" style="width:400px; padding:2rem; text-align:left;">
+            <h2 style="margin-top:0; margin-bottom:1.5rem;">Secure New Lead</h2>
+            <form id="leadForm">
+                <label style="font-size:0.8rem; color:var(--text-dim); display:block; margin-bottom:8px; font-weight:600;">FIRST NAME</label>
+                <input type="text" id="fname" required placeholder="e.g. John" style="width:100%; margin-bottom:1.2rem;">
+                <label style="font-size:0.8rem; color:var(--text-dim); display:block; margin-bottom:8px; font-weight:600;">EMAIL ADDRESS</label>
+                <input type="email" id="lmail" required placeholder="john@example.com" style="width:100%; margin-bottom:2rem;">
+                <div style="display:flex; gap:12px;">
+                    <button type="submit" class="btn-primary" style="flex:1;">Save Lead</button>
+                    <button type="button" onclick="closeModal()" style="background:transparent; border:1px solid var(--border); color:var(--text-dim); border-radius:10px; padding:12px; cursor:pointer; font-weight:600;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="deleteModal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
+        <div class="glass-card" style="width:400px; padding:2rem; text-align:center; border: 1px solid rgba(239, 68, 68, 0.3);">
+            <div style="width:60px; height:60px; background:rgba(239,68,68,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem auto;">
+                <i class="fas fa-exclamation-triangle" style="color:#ef4444; font-size:1.5rem;"></i>
+            </div>
+            <h2 style="margin-top:0; margin-bottom:0.5rem; color:white;">Delete this lead?</h2>
+            <p style="color:var(--text-dim); font-size:0.9rem; margin-bottom:2rem;">This action cannot be undone.</p>
+            <div style="display:flex; gap:12px;">
+                <button onclick="closeDeleteModal()" style="flex:1; background:transparent; border:1px solid var(--border); color:white; border-radius:10px; padding:12px; cursor:pointer; font-weight:600;">Cancel</button>
+                <button onclick="confirmDelete()" style="flex:1; background:#ef4444; border:none; color:white; border-radius:10px; padding:12px; cursor:pointer; font-weight:600; box-shadow: 0 4px 12px rgba(239,68,68,0.4);">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="dash-client.js"></script>
+</body>
+</html>
