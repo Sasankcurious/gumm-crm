@@ -8,6 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
+const SECRET_KEY = process.env.JWT_SECRET || 'gumm-crm-secure-key';
 
 // --- DATABASE CONNECTION ---
 // --- DATABASE CONNECTION ---
