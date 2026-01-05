@@ -219,16 +219,35 @@ app.delete('/notes/:id', authMiddleware, async (req, res) => {
     }
 });
 
-// START SERVER
-//app.listen(5000, () => {
-    //console.log("===================================================");
-    //console.log("👉 Dashboard Link: http://localhost:5000");
-    //console.log("===================================================");
-//})
+// --- HANDLE SETTINGS UPDATE (Paste this ABOVE app.listen) ---
+app.put('/api/settings', async (req, res) => {
+    // 1. Check if user is logged in
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
-// Use the port Render gives us, OR use 5000 if we are on localhost
+    try {
+        // 2. Verify who the user is
+        const decoded = jwt.verify(token, SECRET_KEY);
+        const userId = decoded.id;
+
+        // 3. Get the new data from the form
+        const { first_name, last_name, phone, job_title } = req.body;
+
+        // 4. Update the database
+        await db.query(
+            'UPDATE users SET first_name = ?, last_name = ?, phone = ?, job_title = ? WHERE id = ?',
+            [first_name, last_name, phone, job_title, userId]
+        );
+
+        res.json({ message: "Profile updated successfully!" });
+    } catch (err) {
+        console.error("Settings Update Error:", err);
+        res.status(500).json({ error: "Failed to update settings" });
+    }
+});
+
+// --- SERVER START ---
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
